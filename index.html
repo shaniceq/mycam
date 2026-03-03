@@ -2,17 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Filtercam</title>
 <style>
-* { margin:0; padding:0; box-sizing:border-box; }
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body {
   font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;
-  height:100vh;
-  overflow:hidden;
-  background:#fff;
-  display:flex;
-  flex-direction:column;
+  height:100vh; overflow:hidden; background:#fff;
+  display:flex; flex-direction:column;
 }
 .screen { display:none; width:100%; height:100%; flex-direction:column; }
 .screen.active { display:flex; }
@@ -20,72 +17,60 @@ body {
 /* SCREEN 1 */
 #screen1 { background:#fff; }
 #s1-top {
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:40px 32px;
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; padding:40px 32px;
 }
 #s1-icon {
-  width:96px; height:96px;
-  background:#f2f2f2;
-  display:flex; align-items:center; justify-content:center;
-  margin-bottom:28px;
+  width:96px; height:96px; background:#f2f2f2;
+  display:flex; align-items:center; justify-content:center; margin-bottom:28px;
 }
 #s1-title { font-size:28px; font-weight:700; color:#111; letter-spacing:-0.5px; margin-bottom:10px; }
 #s1-desc { font-size:15px; color:#bbb; text-align:center; line-height:1.6; max-width:260px; }
 #s1-bottom { display:flex; flex-direction:column; gap:1px; }
 .s1-btn {
-  padding:20px; border:none; font-family:inherit;
-  font-size:15px; font-weight:600; cursor:pointer;
-  display:flex; align-items:center; gap:12px; width:100%;
+  padding:20px; border:none; font-family:inherit; font-size:15px;
+  font-weight:600; cursor:pointer; display:flex; align-items:center;
+  gap:12px; width:100%; text-align:left;
 }
-#btn-upload { background:#111; color:#fff; }
-#btn-cam-s1 { background:#f2f2f2; color:#111; }
-#fi-s1 { display:none; }
+#btn-camera { background:#111; color:#fff; }
+#fi-camera { display:none; }
 
 /* SCREEN 2 */
 #screen2 { background:#000; }
 #topbar {
-  height:52px; background:#000;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 16px; flex-shrink:0;
+  height:52px; background:#000; display:flex; align-items:center;
+  justify-content:space-between; padding:0 16px; flex-shrink:0;
 }
 #back-btn {
   background:none; border:none; color:#888; font-family:inherit;
-  font-size:13px; font-weight:500; cursor:pointer;
-  display:flex; align-items:center; gap:4px; padding:0;
+  font-size:13px; font-weight:500; cursor:pointer; padding:6px 0;
 }
 #filter-label { color:#666; font-size:13px; font-weight:500; }
 #save-btn {
   background:none; border:none; color:#444; font-family:inherit;
-  font-size:13px; font-weight:600; cursor:not-allowed; padding:0;
+  font-size:13px; font-weight:600; padding:6px 0; cursor:pointer;
 }
-#save-btn.on { color:#fff; cursor:pointer; }
+#save-btn.on { color:#fff; }
 
 #photo-area {
-  flex:1; background:#000;
-  display:flex; align-items:center; justify-content:center;
-  position:relative; overflow:hidden;
+  flex:1; background:#000; display:flex; align-items:center;
+  justify-content:center; position:relative; overflow:hidden;
 }
-#photo-canvas { max-width:100%; max-height:100%; object-fit:contain; display:none; }
+#photo-canvas { max-width:100%; max-height:100%; display:none; }
 
 #overlay-btns {
-  display:none;
-  position:absolute; bottom:14px; left:14px; right:14px;
-  flex-direction:row; gap:8px;
+  display:none; position:absolute;
+  bottom:14px; left:14px; right:14px; flex-direction:row; gap:8px;
 }
 #overlay-btns.show { display:flex; }
 .ov-btn {
   flex:1; height:42px; border:none; font-family:inherit;
   font-size:12px; font-weight:600; cursor:pointer;
-  display:flex; align-items:center; justify-content:center; gap:7px;
+  display:flex; align-items:center; justify-content:center;
   background:rgba(255,255,255,0.1); color:#fff;
 }
 #remove-btn { background:rgba(200,30,30,0.25); color:#ff6060; }
 
-/* filter strip */
 #filter-panel { height:130px; background:#0a0a0a; flex-shrink:0; }
 #filter-scroll {
   display:flex; flex-direction:row; overflow-x:auto;
@@ -96,7 +81,7 @@ body {
   flex:1; min-width:80px; display:flex; flex-direction:column;
   cursor:pointer; background:#111;
 }
-.f-item.active { background:#111; border-top:2px solid #fff; }
+.f-item.active { border-top:2px solid #fff; }
 .f-item.active .f-name { color:#fff; }
 .f-preview { flex:1; overflow:hidden; background:#1c1c1c; }
 .f-preview canvas, .f-preview .no-prev { width:100%; height:100%; display:block; }
@@ -106,38 +91,8 @@ body {
   font-size:10px; font-weight:600; color:#555; flex-shrink:0;
 }
 
-/* camera modal */
-#cam-modal {
-  display:none; position:fixed; inset:0;
-  background:#000; z-index:200; flex-direction:column;
-}
-#cam-modal.open { display:flex; }
-#cam-bar {
-  height:52px; background:#000;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:0 18px; flex-shrink:0;
-}
-#cam-bar span { color:#777; font-size:13px; font-weight:500; }
-#cam-close {
-  background:none; border:none; color:#888; font-family:inherit;
-  font-size:13px; font-weight:500; cursor:pointer;
-}
-#cam-video { flex:1; width:100%; object-fit:cover; background:#000; display:block; }
-#cam-denied {
-  flex:1; background:#0a0a0a; display:none;
-  flex-direction:column; align-items:center; justify-content:center;
-  gap:12px; color:#555; font-size:13px;
-}
-#cam-snap {
-  height:62px; background:#fff; color:#111; border:none;
-  font-family:inherit; font-size:14px; font-weight:700; cursor:pointer; flex-shrink:0;
-}
-#cam-lib {
-  height:50px; background:#161616; color:#999; border:none;
-  font-family:inherit; font-size:13px; font-weight:500; cursor:pointer;
-  display:flex; align-items:center; justify-content:center; gap:8px; flex-shrink:0;
-}
-#fi-cam { display:none; }
+/* new photo file input hidden */
+#fi-new { display:none; }
 </style>
 </head>
 <body>
@@ -146,44 +101,47 @@ body {
 <div class="screen active" id="screen1">
   <div id="s1-top">
     <div id="s1-icon">
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.4">
+        <rect x="2" y="7" width="20" height="14"/>
+        <circle cx="12" cy="14" r="3.5"/>
+        <path d="M8 7V5h8v2"/>
+      </svg>
     </div>
     <div id="s1-title">Filtercam</div>
-    <div id="s1-desc">Add a photo and transform it with beautiful filters in one tap</div>
+    <div id="s1-desc">Take a photo and apply beautiful filters in one tap</div>
   </div>
   <div id="s1-bottom">
-    <label class="s1-btn" id="btn-upload" for="fi-s1">
-      Choose from Library
-      <input type="file" id="fi-s1" accept="image/*">
-    </label>
-    <button class="s1-btn" id="btn-cam-s1">
+    <label class="s1-btn" id="btn-camera" for="fi-camera">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="7" width="20" height="14"/>
+        <circle cx="12" cy="14" r="3.5"/>
+        <path d="M8 7V5h8v2"/>
+      </svg>
       Take a Photo
-    </button>
+      <input type="file" id="fi-camera" accept="image/*" capture="camera">
+    </label>
   </div>
 </div>
 
 <!-- SCREEN 2 -->
 <div class="screen" id="screen2">
   <div id="topbar">
-    <button id="back-btn">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-      Back
-    </button>
+    <button id="back-btn">&#8592; Back</button>
     <span id="filter-label">None</span>
     <button id="save-btn">Save</button>
   </div>
   <div id="photo-area">
     <canvas id="photo-canvas"></canvas>
     <div id="overlay-btns">
-      <button class="ov-btn" id="new-btn">
+      <label class="ov-btn" for="fi-new">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="2" y="7" width="20" height="14"/>
           <circle cx="12" cy="14" r="3.5"/>
           <path d="M8 7V5h8v2"/>
         </svg>
         New Photo
-      </button>
+        <input type="file" id="fi-new" accept="image/*" capture="camera">
+      </label>
       <button class="ov-btn" id="remove-btn">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="3 6 5 6 21 6"/>
@@ -199,28 +157,6 @@ body {
   </div>
 </div>
 
-<!-- CAMERA MODAL -->
-<div id="cam-modal">
-  <div id="cam-bar">
-    <span>Camera</span>
-    <button id="cam-close">Close</button>
-  </div>
-  <video id="cam-video" autoplay playsinline></video>
-  <div id="cam-denied">
-    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="1.4">
-      <rect x="2" y="7" width="20" height="14"/>
-      <circle cx="12" cy="14" r="3.5"/>
-      <path d="M8 7V5h8v2"/>
-    </svg>
-    Camera access denied or unavailable
-  </div>
-  <button id="cam-snap">Take Photo</button>
-  <label id="cam-lib" for="fi-cam">
-    Choose from Library
-    <input type="file" id="fi-cam" accept="image/*">
-  </label>
-</div>
-
 <script>
 const FILTERS = [
   { name:"None",   css:"none" },
@@ -233,8 +169,7 @@ const FILTERS = [
   { name:"Cool",   css:"hue-rotate(200deg) saturate(1.2)" },
 ];
 
-let img = null, filterCss = "none", stream = null;
-
+let img = null, filterCss = "none";
 const s1 = document.getElementById("screen1");
 const s2 = document.getElementById("screen2");
 const canvas = document.getElementById("photo-canvas");
@@ -243,40 +178,17 @@ const overlay = document.getElementById("overlay-btns");
 const saveBtn = document.getElementById("save-btn");
 const filterLabel = document.getElementById("filter-label");
 const filterScroll = document.getElementById("filter-scroll");
-const camModal = document.getElementById("cam-modal");
-const camVideo = document.getElementById("cam-video");
-const camDenied = document.getElementById("cam-denied");
 
 function goS1() { s2.classList.remove("active"); s1.classList.add("active"); }
 function goS2() { s1.classList.remove("active"); s2.classList.add("active"); }
 
-document.getElementById("back-btn").addEventListener("click", () => { resetPhoto(); goS1(); });
-
-function resetPhoto() {
-  img = null; filterCss = "none";
-  canvas.style.display = "none";
-  overlay.classList.remove("show");
-  saveBtn.classList.remove("on");
-  filterLabel.textContent = "None";
-  document.querySelectorAll(".f-item").forEach((el, i) => {
-    el.classList.toggle("active", i === 0);
-  });
-  FILTERS.forEach((f, i) => {
-    const slot = filterScroll.children[i];
-    if (!slot) return;
-    const prev = slot.querySelector(".f-preview");
-    if (!prev) return;
-    prev.innerHTML = '<div class="no-prev" id="fp-' + i + '"></div>';
-  });
-}
-
 function loadImg(src) {
   const i = new Image();
-  i.onload = () => {
+  i.onload = function() {
     img = i;
     filterCss = "none";
     filterLabel.textContent = "None";
-    document.querySelectorAll(".f-item").forEach((el, idx) => el.classList.toggle("active", idx === 0));
+    document.querySelectorAll(".f-item").forEach((el,idx) => el.classList.toggle("active", idx===0));
     canvas.style.display = "block";
     overlay.classList.add("show");
     saveBtn.classList.add("on");
@@ -294,94 +206,75 @@ function readFile(file) {
   r.readAsDataURL(file);
 }
 
-document.getElementById("fi-s1").addEventListener("change", e => { readFile(e.target.files[0]); e.target.value = ""; });
-document.getElementById("fi-cam").addEventListener("change", e => { stopCam(); readFile(e.target.files[0]); e.target.value = ""; });
-document.getElementById("btn-cam-s1").addEventListener("click", openCam);
-document.getElementById("new-btn").addEventListener("click", openCam);
-document.getElementById("remove-btn").addEventListener("click", () => { resetPhoto(); goS1(); });
+document.getElementById("fi-camera").addEventListener("change", e => { readFile(e.target.files[0]); e.target.value=""; });
+document.getElementById("fi-new").addEventListener("change", e => { readFile(e.target.files[0]); e.target.value=""; });
 
-async function openCam() {
-  camModal.classList.add("open");
-  camDenied.style.display = "none";
-  camVideo.style.display = "block";
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:"environment" }, audio:false });
-    camVideo.srcObject = stream;
-  } catch {
-    camVideo.style.display = "none";
-    camDenied.style.display = "flex";
-  }
-}
-
-function stopCam() {
-  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-  camModal.classList.remove("open");
-}
-
-document.getElementById("cam-close").addEventListener("click", stopCam);
-document.getElementById("cam-snap").addEventListener("click", () => {
-  if (!stream) return;
-  const tmp = document.createElement("canvas");
-  tmp.width = camVideo.videoWidth; tmp.height = camVideo.videoHeight;
-  tmp.getContext("2d").drawImage(camVideo, 0, 0);
-  stopCam();
-  loadImg(tmp.toDataURL("image/png"));
+document.getElementById("back-btn").addEventListener("click", () => {
+  img=null; filterCss="none";
+  canvas.style.display="none";
+  overlay.classList.remove("show");
+  saveBtn.classList.remove("on");
+  filterLabel.textContent="None";
+  document.querySelectorAll(".f-item").forEach((el,i)=>el.classList.toggle("active",i===0));
+  FILTERS.forEach((f,i)=>{
+    const slot=filterScroll.children[i]; if(!slot) return;
+    const prev=slot.querySelector(".f-preview");
+    if(prev) prev.innerHTML='<div class="no-prev" id="fp-'+i+'"></div>';
+  });
+  goS1();
 });
 
-FILTERS.forEach((f, i) => {
-  const item = document.createElement("div");
-  item.className = "f-item" + (i === 0 ? " active" : "");
-  const prev = document.createElement("div"); prev.className = "f-preview";
-  const np = document.createElement("div"); np.className = "no-prev"; np.id = "fp-" + i;
-  prev.appendChild(np);
-  const name = document.createElement("div"); name.className = "f-name"; name.textContent = f.name;
-  item.appendChild(prev); item.appendChild(name);
-  filterScroll.appendChild(item);
-  item.addEventListener("click", () => {
-    document.querySelectorAll(".f-item").forEach(el => el.classList.remove("active"));
-    item.classList.add("active");
-    filterCss = f.css;
-    filterLabel.textContent = f.name;
-    if (img) renderMain();
-  });
+document.getElementById("remove-btn").addEventListener("click", () => {
+  document.getElementById("back-btn").click();
 });
 
-function renderMain() {
-  const area = document.getElementById("photo-area");
-  const mw = area.clientWidth, mh = area.clientHeight;
-  const r = Math.min(mw / img.width, mh / img.height);
-  canvas.width = Math.round(img.width * r);
-  canvas.height = Math.round(img.height * r);
-  ctx.filter = filterCss === "none" ? "none" : filterCss;
-  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-}
-
-function renderThumbs() {
-  FILTERS.forEach((f, i) => {
-    const el = document.getElementById("fp-" + i);
-    if (!el || !img) return;
-    const tc = document.createElement("canvas"); tc.width = 80; tc.height = 104;
-    const tc2 = tc.getContext("2d");
-    tc2.filter = f.css === "none" ? "none" : f.css;
-    tc2.drawImage(img, 0, 0, 80, 104);
-    el.replaceWith(tc);
-  });
-}
-
-saveBtn.addEventListener("click", () => {
+saveBtn.addEventListener("click", function() {
   if (!img) return;
   const full = document.createElement("canvas");
-  full.width = img.width; full.height = img.height;
-  const fc = full.getContext("2d");
-  fc.filter = filterCss === "none" ? "none" : filterCss;
-  fc.drawImage(img, 0, 0);
-  const a = document.createElement("a");
-  a.download = "filtercam-" + Date.now() + ".png";
-  a.href = full.toDataURL("image/png");
+  full.width=img.width; full.height=img.height;
+  const fc=full.getContext("2d");
+  fc.filter=filterCss==="none"?"none":filterCss;
+  fc.drawImage(img,0,0);
+  const a=document.createElement("a");
+  a.download="filtercam-"+Date.now()+".jpg";
+  a.href=full.toDataURL("image/jpeg",0.92);
   a.click();
 });
 
-window.addEventListener("resize", () => { if (img) renderMain(); });
+FILTERS.forEach((f,i)=>{
+  const item=document.createElement("div");
+  item.className="f-item"+(i===0?" active":"");
+  const prev=document.createElement("div"); prev.className="f-preview";
+  const np=document.createElement("div"); np.className="no-prev"; np.id="fp-"+i;
+  prev.appendChild(np);
+  const name=document.createElement("div"); name.className="f-name"; name.textContent=f.name;
+  item.appendChild(prev); item.appendChild(name); filterScroll.appendChild(item);
+  item.addEventListener("click",function(){
+    document.querySelectorAll(".f-item").forEach(el=>el.classList.remove("active"));
+    item.classList.add("active"); filterCss=f.css;
+    filterLabel.textContent=f.name; if(img) renderMain();
+  });
+});
+
+function renderMain(){
+  const area=document.getElementById("photo-area");
+  const r=Math.min(area.clientWidth/img.width, area.clientHeight/img.height);
+  canvas.width=Math.round(img.width*r); canvas.height=Math.round(img.height*r);
+  ctx.filter=filterCss==="none"?"none":filterCss;
+  ctx.drawImage(img,0,0,canvas.width,canvas.height);
+}
+
+function renderThumbs(){
+  FILTERS.forEach((f,i)=>{
+    const el=document.getElementById("fp-"+i); if(!el||!img) return;
+    const tc=document.createElement("canvas"); tc.width=80; tc.height=104;
+    const tc2=tc.getContext("2d");
+    tc2.filter=f.css==="none"?"none":f.css;
+    tc2.drawImage(img,0,0,80,104); el.replaceWith(tc);
+  });
+}
+
+window.addEventListener("resize",()=>{ if(img) renderMain(); });
 </script>
 </body>
 </html>
